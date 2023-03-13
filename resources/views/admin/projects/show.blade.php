@@ -13,6 +13,12 @@
             <img class="float-start me-3 post-img" src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->slug }}">
         @endif
         <p>{{ $project->content }}</p>
+
+        @forelse ($project->technologies as $item)
+            <p>Technologies: {{ $item->label }}</p>
+        @empty
+            -
+        @endforelse
     </div>
     <div class="d-flex justify-content-end">
         <a class="btn btn-secondary me-2" href="{{ route('admin.projects.index') }}">Back</a>
