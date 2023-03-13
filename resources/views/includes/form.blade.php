@@ -1,4 +1,5 @@
 {{-- Form --}}
+
 @if ($project->exists)
     <form action="{{ route('admin.projects.update', $project->id) }}" method="POST" enctype="multipart/form-data">
         @method('PUT')
@@ -48,7 +49,16 @@
 </div>
 
 <hr>
-<div class="d-flex justify-content-end">
+<div class="d-flex justify-content-between">
+    <div>
+        @foreach ($technologies as $technology)
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="teck-{{ $technology->id }}"
+                    value="teck-{{ $technology->id }}">
+                <label class="form-check-label" for="teck-{{ $technology->id }}">{{ $technology->label }}</label>
+            </div>
+        @endforeach
+    </div>
     <button type="submit" class="btn btn-success">Salva</button>
 </div>
 </form>
