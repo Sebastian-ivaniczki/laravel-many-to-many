@@ -52,6 +52,10 @@ class ProjectController extends Controller
 
         $new_project->save();
 
+        //corelation technology whit the project
+
+        $new_project->technologies()->attach($data['technologie']);
+
         return  to_route('admin.projects.show', $new_project->id)->with('type', 'success')->with('msg', 'project created');
     }
 
