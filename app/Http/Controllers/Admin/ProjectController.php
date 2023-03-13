@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Technology;
 use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
@@ -29,7 +30,8 @@ class ProjectController extends Controller
         $project = new Project();
         $types = Type::orderBy('id')->get();
         $technologies = Technology::all();
-        return view('admin.projects.create', compact('project', 'types', 'technologies'));
+        $technologies_project = [];
+        return view('admin.projects.create', compact('project', 'types', 'technologies', 'technologies_project'));
     }
 
     /**
@@ -54,7 +56,7 @@ class ProjectController extends Controller
 
         //corelation technology whit the project
 
-        $new_project->technologies()->attach($data['technologie']);
+        if (Arr::exists($data, 'technologie')) $new_project->technologies()->attach($data['technologie']);
 
         return  to_route('admin.projects.show', $new_project->id)->with('type', 'success')->with('msg', 'project created');
     }
@@ -74,7 +76,10 @@ class ProjectController extends Controller
     {
         $technologies = Technology::all();
         $types = Type::orderBy('id')->get();
-        return view('admin.projects.edit', compact('project', 'types', 'technologies'));
+        $technologies_project = $project->technologies->pluck('id')->toArray();
+
+
+        return view('admin.projects.edit', compact('project', 'types', 'technologies', 'technologies_project'));
     }
 
     /**
@@ -99,6 +104,9 @@ class ProjectController extends Controller
         //update
         $project->update($data);
 
+        //add relation 
+        if (Arr::exists($data, 'technologie')) $project->technologies()->sync($data['technologie']);
+        else $project->technologies()->detach();
         return to_route('admin.projects.show', $project->id)
             ->with('type', 'success')
             ->with('msg', 'sucses change');
